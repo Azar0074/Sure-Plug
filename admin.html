@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sure Plug Admin</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #0a0a0f; }
+    .admin-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .admin-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.8rem;
+    }
+    .admin-header h1 span { color: #ff3b6b; }
+    .login-box {
+      max-width: 360px;
+      margin: 4rem auto;
+      background: #14141c;
+      border: 1px solid #2a2a3a;
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .login-box input {
+      width: 100%;
+      background: #1c1c28;
+      border: 1px solid #2a2a3a;
+      color: #f0f0f5;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin: 1rem 0;
+      outline: none;
+    }
+    .login-box input:focus { border-color: #ff3b6b; }
+    .codes-box {
+      background: #14141c;
+      border: 1px solid #2a2a3a;
+      border-radius: 14px;
+      padding: 1.3rem;
+      margin-bottom: 2rem;
+    }
+    .codes-box h3 { margin-bottom: 0.8rem; font-size: 1.05rem; }
+    .code-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #2a2a3a;
+      font-size: 0.92rem;
+    }
+    .code-row:last-child { border-bottom: none; }
+    .code-value {
+      font-family: monospace;
+      background: #1c1c28;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      color: #3dd68c;
+      font-weight: 600;
+    }
+    .listing-admin {
+      background: #14141c;
+      border: 1px solid #2a2a3a;
+      border-radius: 14px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .listing-admin.blocked {
+      opacity: 0.55;
+      border-color: #ff3b6b;
+    }
+    .listing-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .listing-name { font-weight: 600; font-size: 1.05rem; }
+    .listing-meta { color: #8b8b9e; font-size: 0.85rem; }
+    .listing-msg { color: #d0d0dc; font-size: 0.9rem; margin-bottom: 0.9rem; }
+    .admin-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .admin-actions button {
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #2a2a3a;
+      background: #1c1c28;
+      color: #f0f0f5;
+    }
+    .admin-actions button:hover { border-color: #ff3b6b; }
+    .admin-actions .danger { color: #ff3b6b; }
+    .admin-actions .success { color: #3dd68c; }
+    .empty-admin { text-align: center; color: #8b8b9e; padding: 2rem; }
+    .back-link {
+      color: #8b8b9e;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+    .back-link:hover { color: #ff3b6b; }
+  </style>
+</head>
+<body>
+  <div id="login-screen" class="login-box">
+    <h2>Admin Access</h2>
+    <p style="color:#8b8b9e; font-size:0.9rem; margin-top:0.4rem;">Private area — not public</p>
+    <input type="password" id="admin-pass" placeholder="Enter password" />
+    <button class="primary-btn" id="login-btn">Enter</button>
+    <p id="login-error" style="color:#ff3b6b; font-size:0.85rem; margin-top:0.8rem; display:none;">Wrong password</p>
+  </div>
+
+  <div id="admin-panel" class="admin-wrap" style="display:none;">
+    <div class="admin-header">
+      <h1>Sure<span>Plug</span> Admin</h1>
+      <a href="index.html" class="back-link">← Back to site</a>
+    </div>
+
+    <div class="codes-box">
+      <h3>Unlock Codes (send these after verifying payment)</h3>
+      <div class="code-row">
+        <span>1 Week (₦3,000)</span>
+        <span class="code-value">WEEK3000</span>
+      </div>
+      <div class="code-row">
+        <span>1 Month (₦5,000)</span>
+        <span class="code-value">MONTH5000</span>
+      </div>
+      <div class="code-row">
+        <span>Lifetime (₦10,000)</span>
+        <span class="code-value">LIFETIME10K</span>
+      </div>
+      <p style="font-size:0.8rem; color:#8b8b9e; margin-top:0.9rem;">
+        After user pays and sends receipt on WhatsApp, reply with the matching code above.
+      </p>
+    </div>
+
+    <h3 style="margin-bottom:1rem;">All Listings</h3>
+    <div id="admin-listings"></div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = 'azar2026';
+    const STORAGE_KEY = 'sureplug_listings';
+
+    function getListings() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveListings(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function timeAgo(ts) {
+      const mins = Math.floor((Date.now() - ts) / 60000);
+      if (mins < 1) return "just now";
+      if (mins < 60) return mins + "m ago";
+      return Math.floor(mins / 60) + "h ago";
+    }
+
+    function renderAdminListings() {
+      const container = document.getElementById('admin-listings');
+      const listings = getListings().sort((a, b) => b.time - a.time);
+
+      if (listings.length === 0) {
+        container.innerHTML = '<div class="empty-admin">No listings yet.</div>';
+        return;
+      }
+
+      container.innerHTML = listings.map(l => `
+        <div class="listing-admin ${l.blocked ? 'blocked' : ''}">
+          <div class="listing-top">
+            <div>
+              <div class="listing-name">${escapeHtml(l.name)}, ${l.age} ${l.blocked ? '(BLOCKED)' : ''}</div>
+              <div class="listing-meta">${escapeHtml(l.location)} • Looking for ${l.looking} • ${timeAgo(l.time)}</div>
+            </div>
+          </div>
+          <div class="listing-msg">${escapeHtml(l.message)}</div>
+          <div class="admin-actions">
+            ${l.blocked 
+              ? `<button class="success" onclick="toggleBlock(${l.id})">Unblock</button>`
+              : `<button onclick="toggleBlock(${l.id})">Block</button>`
+            }
+            <button class="danger" onclick="deleteListing(${l.id})">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    window.toggleBlock = function(id) {
+      const listings = getListings();
+      const item = listings.find(l => l.id === id);
+      if (item) {
+        item.blocked = !item.blocked;
+        saveListings(listings);
+        renderAdminListings();
+      }
+    };
+
+    window.deleteListing = function(id) {
+      if (!confirm('Delete this listing permanently?')) return;
+      const listings = getListings().filter(l => l.id !== id);
+      saveListings(listings);
+      renderAdminListings();
+    };
+
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('admin-pass').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') tryLogin();
+    });
+
+    function tryLogin() {
+      const pass = document.getElementById('admin-pass').value;
+      if (pass === ADMIN_PASSWORD) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-panel').style.display = 'block';
+        renderAdminListings();
+        sessionStorage.setItem('sureplug_admin', '1');
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    if (sessionStorage.getItem('sureplug_admin') === '1') {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      renderAdminListings();
+    }
+  </script>
+</body>
+</html>
