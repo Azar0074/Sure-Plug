@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sure Plug — One Night. No Strings.</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <header>
+    <div class="logo">Sure<span>Plug</span></div>
+    <nav>
+      <button class="nav-btn active" data-view="browse">Browse</button>
+      <button class="nav-btn" data-view="post">Post</button>
+      <button class="nav-btn premium-nav" id="premium-status" data-view="upgrade">Upgrade</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="browse-view" class="view active">
+      <div class="hero">
+        <h1>Tonight only.</h1>
+        <p>No bios. No games. Just chemistry.</p>
+      </div>
+
+      <div class="filters">
+        <select id="filter-looking">
+          <option value="all">Anyone</option>
+          <option value="women">Women</option>
+          <option value="men">Men</option>
+          <option value="couples">Couples</option>
+        </select>
+        <select id="filter-vibe">
+          <option value="all">Any vibe</option>
+          <option value="chill">Chill</option>
+          <option value="wild">Wild</option>
+          <option value="discreet">Discreet</option>
+        </select>
+      </div>
+
+      <div id="cards" class="cards"></div>
+    </section>
+
+    <section id="post-view" class="view">
+      <div class="post-card">
+        <h2>Drop your listing</h2>
+        <p class="subtitle">Be honest. Be brief. Be gone by morning.</p>
+
+        <form id="post-form">
+          <div class="form-row">
+            <label>Name / Alias</label>
+            <input type="text" id="name" placeholder="e.g. Alex" required maxlength="20" />
+          </div>
+          <div class="form-row">
+            <label>Looking for</label>
+            <select id="looking" required>
+              <option value="women">Women</option>
+              <option value="men">Men</option>
+              <option value="couples">Couples</option>
+              <option value="anyone">Anyone</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Vibe</label>
+            <select id="vibe" required>
+              <option value="chill">Chill</option>
+              <option value="wild">Wild</option>
+              <option value="discreet">Discreet</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Age</label>
+            <input type="number" id="age" min="18" max="99" placeholder="25" required />
+          </div>
+          <div class="form-row">
+            <label>City / Area</label>
+            <input type="text" id="location" placeholder="Downtown / East Side" required maxlength="30" />
+          </div>
+          <div class="form-row">
+            <label>What are you looking for tonight?</label>
+            <textarea id="message" rows="3" placeholder="Keep it short and clear..." required maxlength="180"></textarea>
+          </div>
+          <button type="submit" class="primary-btn">Post for tonight</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="upgrade-view" class="view">
+      <div class="upgrade-card">
+        <div class="upgrade-badge">PREMIUM</div>
+        <h2>Unlock real conversations</h2>
+        <p class="subtitle">Free users can browse. Premium users can actually meet.</p>
+
+        <div class="pricing">
+          <div class="price-option" data-plan="week" data-price="3000" data-label="1 Week">
+            <div class="price-tag">1 Week</div>
+            <div class="price-amount">₦3,000</div>
+            <div class="price-desc">7 days unlimited chat</div>
+          </div>
+          <div class="price-option recommended" data-plan="month" data-price="5000" data-label="1 Month">
+            <div class="price-tag">1 Month</div>
+            <div class="price-amount">₦5,000</div>
+            <div class="price-desc">30 days unlimited chat</div>
+          </div>
+          <div class="price-option" data-plan="lifetime" data-price="10000" data-label="Lifetime">
+            <div class="price-tag">Total Unlock</div>
+            <div class="price-amount">₦10,000</div>
+            <div class="price-desc">Forever access</div>
+          </div>
+        </div>
+
+        <ul class="features">
+          <li>✓ Unlimited messaging</li>
+          <li>✓ Arrange meetups privately</li>
+          <li>✓ Priority placement in browse</li>
+          <li>✓ No more locked chats</li>
+        </ul>
+
+        <div class="payment-box">
+          <h3>Pay via Transfer</h3>
+          <div class="bank-card">
+            <div class="bank-name">Zenith Bank</div>
+            <div class="bank-detail"><span>Account Name:</span> Timilehin Toheeb Adekanmi</div>
+            <div class="bank-detail"><span>Account Number:</span> <strong>2436397808</strong></div>
+          </div>
+          <div class="bank-card">
+            <div class="bank-name">OPay</div>
+            <div class="bank-detail"><span>Account Name:</span> Adekanmi Timilehin Toheeb</div>
+            <div class="bank-detail"><span>Account Number:</span> <strong>8105275986</strong></div>
+          </div>
+          <p class="payment-note">Transfer the exact amount for your selected plan, then submit your receipt.</p>
+        </div>
+
+        <a id="whatsapp-btn" class="primary-btn whatsapp-btn" href="#" target="_blank" rel="noopener">
+          I’ve Paid — Submit Receipt on WhatsApp
+        </a>
+
+        <div class="unlock-section">
+          <p>Already paid and got a code from admin?</p>
+          <div class="unlock-row">
+            <input type="text" id="unlock-code" placeholder="Enter unlock code" maxlength="20" />
+            <button id="redeem-btn" class="secondary-btn">Redeem</button>
+          </div>
+        </div>
+        <p class="secure-note">After payment, send your receipt on WhatsApp. You’ll receive an unlock code once verified.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="chat-modal" class="modal hidden">
+    <div class="modal-content chat-modal">
+      <div class="chat-header">
+        <div>
+          <strong id="chat-with">Chat</strong>
+          <span class="chat-status">Online now</span>
+        </div>
+        <button class="close-btn" id="close-chat">×</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="msg them">Hey 👋 saw your listing</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Type a message..." maxlength="300" />
+        <button id="send-chat">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="locked-modal" class="modal hidden">
+    <div class="modal-content locked-modal">
+      <div class="lock-icon">🔒</div>
+      <h3>Chat is locked</h3>
+      <p>Upgrade to Premium to message people and arrange meetups.</p>
+      <button class="primary-btn" id="go-upgrade">See plans</button>
+      <button class="text-btn" id="close-locked">Maybe later</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Sure Plug • Temporary by design</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
